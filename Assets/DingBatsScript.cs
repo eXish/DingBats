@@ -140,13 +140,13 @@ public class DingBatsScript : MonoBehaviour
             switch (stage)
             {
                 case (2):
-                    if (charIndexes[0] - charIndexes[2] > 40)
+                    if (Mathf.Abs(charIndexes[0] - charIndexes[2]) > 40)
                     {
-                        Debug.LogFormat("[DingBats #{0}] {1} - {2} is greater than 40. The correct button to push is number 2.", moduleId, charIndexes[0], charIndexes[2]);
+                        Debug.LogFormat("[DingBats #{0}] The difference between {1} and {2} is greater than 40. The correct button to push is number 2.", moduleId, charIndexes[0], charIndexes[2]);
                     }
                     else
                     {
-                        Debug.LogFormat("[DingBats #{0}] {1} - {2} is not greater than 40.", moduleId, charIndexes[0], charIndexes[2]);
+                        Debug.LogFormat("[DingBats #{0}] The difference between {1} and {2} is not greater than 40.", moduleId, charIndexes[0], charIndexes[2]);
                         if (charIndexes[0] == charIndexes.Max())
                         {
                             Debug.LogFormat("[DingBats #{0}] Button number 1 has the highest value. Correct button to push is number 1", moduleId);
@@ -305,7 +305,7 @@ public class DingBatsScript : MonoBehaviour
                     }
                     break;
                 case (2):
-                    if (charIndexes[0] - charIndexes[2] > 40)
+                    if (Mathf.Abs(charIndexes[0] - charIndexes[2]) > 40)
                     {
                         Debug.LogFormat("[DingBats #{0}] Button number 1 was pressed incorrectly, resetting module to stage 1.", moduleId);
                         this.gameObject.GetComponent<KMBombModule>().HandleStrike();
@@ -394,7 +394,7 @@ public class DingBatsScript : MonoBehaviour
                     }
                     break;
                 case (2):
-                    if (charIndexes[0] - charIndexes[2] > 40)
+                    if (Mathf.Abs(charIndexes[0] - charIndexes[2]) > 40)
                     {
                         Debug.LogFormat("[DingBats #{0}] Button number 2 was pressed correctly, procceding to stage {1}.", moduleId, stage + 1);
                         StageChange(true);
@@ -482,7 +482,7 @@ public class DingBatsScript : MonoBehaviour
                     }
                     break;
                 case (2):
-                    if (charIndexes[0] - charIndexes[2] > 40)
+                    if (Mathf.Abs(charIndexes[0] - charIndexes[2]) > 40)
                     {
                         Debug.LogFormat("[DingBats #{0}] Button number 3 was pressed incorrectly, resetting module to stage 1.", moduleId);
                         this.gameObject.GetComponent<KMBombModule>().HandleStrike();
