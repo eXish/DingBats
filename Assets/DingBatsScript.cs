@@ -42,7 +42,7 @@ public class DingBatsScript : MonoBehaviour
         float scalar = transform.lossyScale.x;
         for (var i = 0; i < lights.Length; i++)
         {
-            lights[i].GetComponent<Light>().range *= scalar;
+            lights[i].GetComponentInChildren<Light>().range *= scalar;
         } 
 
         for (int i = 0; i < buttons.Length; i++)
@@ -546,5 +546,148 @@ public class DingBatsScript : MonoBehaviour
                     break;
             }
         }
+    }
+
+    //Twitch Plays support
+    #pragma warning disable 414
+    private readonly string TwitchHelpMessage = @"!{0} press <pos> [Presses the button in the specified position] | Valid positions are left/l, middle/m, right/r, or 1-3 from left to right";
+    #pragma warning restore 414
+    IEnumerator ProcessTwitchCommand(string command)
+    {
+        string[] parameters = command.Split(' ');
+        if (parameters[0].ToLowerInvariant().Equals("press"))
+        {
+            if (parameters.Length == 1)
+                yield return "sendtochaterror Please specify a position!";
+            else if (parameters.Length > 2)
+                yield return "sendtochaterror Too many parameters!";
+            else
+            {
+                if (!parameters[1].ToLowerInvariant().EqualsAny("left", "l", "middle", "m", "right", "r", "1", "2", "3"))
+                {
+                    yield return "sendtochaterror!f The specified position '" + parameters[1] + "' is invalid!";
+                    yield break;
+                }
+                yield return null;
+                switch (parameters[1].ToLowerInvariant())
+                {
+                    case "left":
+                    case "l":
+                    case "1":
+                        buttons[0].OnInteract();
+                        break;
+                    case "middle":
+                    case "m":
+                    case "2":
+                        buttons[1].OnInteract();
+                        break;
+                    default:
+                        buttons[2].OnInteract();
+                        break;
+                }
+            }
+        }
+    }
+
+    IEnumerator TwitchHandleForcedSolve()
+    {
+        if (stage == 1)
+        {
+            if (charIndexes[0] + charIndexes[1] > 100)
+            {
+                buttons[0].OnInteract();
+            }
+            else
+            {
+                if (charIndexes[0] == charIndexes.Min())
+                {
+                    buttons[0].OnInteract();
+                }
+                else if (charIndexes[1] == charIndexes.Min())
+                {
+                    buttons[1].OnInteract();
+                }
+                else
+                {
+                    buttons[2].OnInteract();
+                }
+            }
+            yield return new WaitForSeconds(.1f);
+        }
+        if (stage == 2)
+        {
+            if (Mathf.Abs(charIndexes[0] - charIndexes[2]) > 40)
+            {
+                buttons[1].OnInteract();
+            }
+            else
+            {
+                if (charIndexes[0] == charIndexes.Max())
+                {
+                    buttons[0].OnInteract();
+                }
+                else if (charIndexes[1] == charIndexes.Max())
+                {
+                    buttons[1].OnInteract();
+                }
+                else
+                {
+                    buttons[2].OnInteract();
+                }
+            }
+            yield return new WaitForSeconds(.1f);
+        }
+        if (stage == 3)
+        {
+            if (charIndexes[1] * charIndexes[2] > 2500)
+            {
+                buttons[2].OnInteract();
+            }
+            else
+            {
+                if (charIndexes[0] != charIndexes.Max() && charIndexes[0] != charIndexes.Min())
+                {
+                    buttons[0].OnInteract();
+                }
+                else if (charIndexes[1] != charIndexes.Max() && charIndexes[1] != charIndexes.Min())
+                {
+                    buttons[1].OnInteract();
+                }
+                else
+                {
+                    buttons[2].OnInteract();
+                }
+            }
+            yield return new WaitForSeconds(.1f);
+        }
+        if (stage == 4)
+        {
+            if (charIndexes[0] == charIndexes.Min())
+            {
+                buttons[0].OnInteract();
+            }
+            else if (charIndexes[1] == charIndexes.Min())
+            {
+                buttons[1].OnInteract();
+            }
+            else
+            {
+                buttons[2].OnInteract();
+            }
+            yield return new WaitForSeconds(.1f);
+        }
+        if (charIndexes[0] == charIndexes.Max())
+        {
+            buttons[0].OnInteract();
+        }
+        else if (charIndexes[1] == charIndexes.Max())
+        {
+            buttons[1].OnInteract();
+        }
+        else
+        {
+            buttons[2].OnInteract();
+        }
+        yield return new WaitForSeconds(.1f);
     }
 }
